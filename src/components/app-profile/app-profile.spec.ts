@@ -1,34 +1,34 @@
-import { flush, render } from '@stencil/core/testing';
 import { AppProfile } from './app-profile';
 
 describe('app-profile', () => {
-  it('should build', () => {
+  it('builds', () => {
     expect(new AppProfile()).toBeTruthy();
   });
 
-  describe('rendering', () => {
-    let element;
-    beforeEach(async () => {
-      element = await render({
-        components: [AppProfile],
-        html: '<app-profile></app-profile>'
-      });
+  describe('normalization', () => {
+    it('returns a blank string if the name is undefined', () => {
+      const component = new AppProfile();
+      expect(component.normalize(undefined)).toEqual('');
     });
 
-    it('should not render any content if there is not a match', async () => {
-      await flush(element);
-      expect(element.textContent).toEqual('');
-    })
+    it('returns a blank string if the name is null', () => {
+      const component = new AppProfile();
+      expect(component.normalize(null)).toEqual('');
+    });
 
-    it('should work with a name passed', async () => {
-      element.match = {
-        params: {
-          name: 'stencil'
-        }
-      }
-      
-      await flush(element);
-      expect(element.textContent).toEqual('Hello! My name is stencil. My name was passed in through a route param!');
+    it('capitalizes the first letter', () => {
+      const component = new AppProfile();
+      expect(component.normalize('quincy')).toEqual('Quincy');
+    });
+
+    it('lower-cases the following letters', () => {
+      const component = new AppProfile();
+      expect(component.normalize('JOSEPH')).toEqual('Joseph');
+    });
+
+    it('handles single letter names', () => {
+      const component = new AppProfile();
+      expect(component.normalize('q')).toEqual('Q');
     });
   });
 });
